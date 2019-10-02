@@ -1,0 +1,18 @@
+{
+  "name": "ORADB_WIKI",
+  "version": "1.0.0",
+  "description": "ORADB_WIKI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Khaja_Mohammed",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "morgan": "^1.9.1",
+    "oracledb": "^4.0.1"
+  }
+}
