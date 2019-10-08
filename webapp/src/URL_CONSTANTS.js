@@ -1,0 +1,1 @@
+export const getRecordAPI = "http://localhost:3000/api/";
