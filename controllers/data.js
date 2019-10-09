@@ -1,14 +1,20 @@
 const db = require('../db/data.js');
-
 async function get(req, res, next) {
     try {
         const context = {};
+        let selectedItem,
+            value;
+        for (const key in req.params) {
+            selectedItem = key;
+            value = req.params[key];
+        }
 
-        context.host_name = req.params.host_name;
+        context.searchKey = selectedItem;
+        context.searchValue = value;
 
         const rows = await db.find(context);
 
-        if (req.params.host_name) {
+        if (selectedItem) {
             if (rows.length > 0) {
                 res.status(200).json(rows);
             } else {

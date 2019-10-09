@@ -28,6 +28,7 @@ function DataTable(props) {
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow>
+                        <TableCell>S.No</TableCell>
                         <TableCell>Database Name</TableCell>
                         <TableCell align="right">Application Name</TableCell>
                         <TableCell align="right">Environment</TableCell>
@@ -39,6 +40,9 @@ function DataTable(props) {
                 <TableBody>
                     {props.rows.map((row, id) => (
                         <TableRow key={id}>
+                            <TableCell component="th" scope="row">
+                                {id+1}
+                            </TableCell>
                             <TableCell component="th" scope="row">
                                 {row.database_name}
                             </TableCell>

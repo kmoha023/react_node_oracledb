@@ -4,8 +4,7 @@ import Typography from '@material-ui/core/Typography';
 
 const home = (props) => (
     <div>
-
-            <h4>Welcome to the ORA Database. You can fetch records here...</h4>
+            <h4>ORACLE DBA WIKI</h4>
     </div>
 );
 

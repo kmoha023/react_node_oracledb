@@ -13,10 +13,9 @@ async function find(context) {
     let query = baseQuery;
     const binds = {};
 
-    if (context.host_name) {
-        binds.HOST_NAME = context.host_name;
-
-        query += `\nwhere HOST_NAME = :HOST_NAME`;
+    if (context.searchKey) {
+        binds.SEARCHVALUE = context.searchValue;
+        query += `\nwhere ${context.searchKey.toUpperCase()} = :SEARCHVALUE`;
     }
 
     const result = await database.simpleExecute(query, binds);

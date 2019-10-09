@@ -10,6 +10,8 @@ import {fade} from '@material-ui/core/styles/colorManipulator';
 import * as URL_CONSTANTS from './URL_CONSTANTS';
 import axios from 'axios';
 import DataTable from './table';
+import CircularIndeterminate from './Loader';
+import CustomizedSnackbars from './Snackbars';
 
 const BootstrapInput = withStyles(theme => ({
     root: {
@@ -50,6 +52,7 @@ const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
         flexWrap: 'wrap',
+        alignItems: 'stretch'
     },
     margin: {
         margin: theme.spacing(1),
@@ -108,11 +111,23 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function GetRecords() {
+
+    const buildSnackbarObject = (open, variant, message, ) => {
+        return {
+            open: open,
+            variant: variant,
+            message: message
+        }
+    };
+
     const classes = useStyles();
     const [selectedItem, setSelectedItem] = React.useState('database_name');
     const [searchValue, setSearchValue] = React.useState('');
     const [errorMsg, setErrorMsg] = React.useState('');
     const [tableData, setTableData] = React.useState(null);
+    const [loading, setLoading] = React.useState(false);
+    const [snackBarObject, setSnackBar] = React.useState(buildSnackbarObject(false, '', ''));
+
     const handleChange = event => {
         setSelectedItem(event.target.value);
     };
@@ -121,22 +136,50 @@ export default function GetRecords() {
         setSearchValue(event.target.value);
     };
 
+    const clearHandler = () => {
+        setTableData(null);
+        setSearchValue('');
+    };
+
+    const onCloseSnackBar = () => {
+        setSnackBar(buildSnackbarObject(false, 'info', ''))
+    };
+
     const submitHandler = event => {
+        setTableData(null);
+        setLoading(true);
         event.preventDefault();
         if (searchValue !== '') {
             axios.get(URL_CONSTANTS.getRecordAPI + "" + selectedItem + "/" + searchValue)
                 .then(res => {
-                    console.log(res.data)
-                    if(res.data){
+                    console.log(res.data);
+                    if (res.data) {
+                        setSnackBar(buildSnackbarObject(true, 'success', 'Success'));
+                        setLoading(false);
                         setTableData(res.data)
                     }
                 })
-                .catch()
+                .catch(err => {
+                    console.log("Error loading data ", err);
+                    setSnackBar(buildSnackbarObject(true, 'error', 'Error getting records'));
+                    setLoading(false)
+                })
         } else {
-            setErrorMsg('Please check the input...')
+            setSnackBar(buildSnackbarObject(true, 'info', 'Please enter valid search field'));
+            setLoading(false);
         }
     };
 
+    let content = loading ?
+        <div>
+            <span>Loading...</span>
+            <CircularIndeterminate/>
+        </div>
+        :
+        (tableData && tableData.length > 0) ?
+            <DataTable rows={tableData}/>
+            :
+            null
     return (
         <React.Fragment>
             <form className={classes.root} autoComplete="off" onSubmit={submitHandler}>
@@ -154,12 +197,13 @@ export default function GetRecords() {
                 </FormControl>
                 <FormControl className={classes.margin}>
                     <div className={classes.grow}/>
-                    {errorMsg !== '' || searchValue !== '' ? <span color="red">{errorMsg}</span> : null}
+                    {errorMsg !== '' || searchValue !== '' ? <span>{errorMsg}</span> : null}
                     <div className={classes.search}>
                         <TextField
                             id="outlined-search"
-                            label={"Search by "+selectedItem}
+                            label={"Search by " + selectedItem}
                             type="search"
+                            value={searchValue}
                             className={classes.textField}
                             margin-left="normal"
                             variant="outlined"
@@ -167,16 +211,35 @@ export default function GetRecords() {
                         />
                         <Link
                             underline='none'
+                            aria-disabled={searchValue === ''}
+                            disabled={searchValue === ''}
                             onClick={submitHandler}
                         >
-                            <Button disabled={searchValue === ''}  variant="contained">
+                            <Button                             className={classes.textField}
+                                                                disabled={searchValue === ''} color="secondary" variant="contained">
                                 Search
+                            </Button>
+                        </Link>
+
+                        <Link
+                            underline='none'
+                            aria-disabled={searchValue === ''}
+                            disabled={searchValue === ''}
+                            onClick={clearHandler}
+                        >
+                            <Button                             className={classes.textField}
+                                                                disabled={searchValue === ''} color="secondary" variant="contained">
+                                Clear
                             </Button>
                         </Link>
                     </div>
                 </FormControl>
             </form>
-            { tableData && tableData.length > 0 ? <DataTable rows={tableData}/> : null }
+            {content}
+            <CustomizedSnackbars
+                closeSnackBar={onCloseSnackBar}
+                snackBarObject={snackBarObject}
+            />
         </React.Fragment>
     );
 }
