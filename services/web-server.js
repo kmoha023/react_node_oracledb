@@ -4,6 +4,7 @@ const webServerConfig = require('../shared/web-server.js');
 const router = require('./router.js');
 const morgan = require('morgan');
 const database = require('./database.js');
+const cors = require('cors');
 
 let httpServer;
 
@@ -14,7 +15,8 @@ function initialize() {
 
         /*Morgan middleware for logging */
         app.use(morgan('combined'));
-
+        // cors
+        app.use(cors());
         app.use('/api', router);
 
         // get db query
