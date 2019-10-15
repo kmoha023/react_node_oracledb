@@ -21,7 +21,7 @@ function initialize() {
 
         // get db query
         app.get('/', async (req, res) => {
-            const result = await database.simpleExecute('select * from DBA_REPORTS.MV_PRD_APEX_SUMMARY_REP');
+            const result = await database.simpleExecute('select * from ORDERS');
                 console.log("Result from DB...", result.rows);
             // result.forEach((row) => {
 

@@ -1,8 +1,8 @@
 module.exports = {
     hrPool: {
-        user: "P2884288",
-        password: "Khaja1234",
-        connectString: "vm0dnoravsd0085.twcable.com:1521/spapx01d",
+        user: "sys",
+        password: "Oracle18",
+        connectString: "sys@//localhost:32118/XE",
         poolMin: 10,
         poolMax: 10,
         poolIncrement: 0
